@@ -1,42 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazir:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Persian ERP Accounting Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Professional Business Colors */
+    --background: 0 0% 98%;
+    --foreground: 215 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Professional Navy Blue for Financial Apps */
+    --primary: 215 80% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-light: 215 80% 35%;
+    --primary-dark: 215 80% 20%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Clean Secondary Colors */
+    --secondary: 215 20% 95%;
+    --secondary-foreground: 215 25% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 15% 96%;
+    --muted-foreground: 215 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 215 20% 92%;
+    --accent-foreground: 215 25% 15%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Financial Colors */
+    --success: 145 85% 35%;
+    --success-foreground: 0 0% 98%;
+    --warning: 45 95% 50%;
+    --warning-foreground: 215 25% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* UI Elements */
+    --border: 215 20% 88%;
+    --input: 0 0% 100%;
+    --ring: 215 80% 25%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Financial Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-success: linear-gradient(135deg, hsl(var(--success)), hsl(145 85% 45%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(215 20% 98%));
+
+    /* Shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(215 25% 15% / 0.1);
+    --shadow-medium: 0 4px 16px -4px hsl(215 25% 15% / 0.15);
+    --shadow-large: 0 8px 32px -8px hsl(215 25% 15% / 0.2);
+
+    /* Persian Typography */
+    --font-persian: 'Vazir', 'Tahoma', sans-serif;
 
     --sidebar-background: 0 0% 98%;
 
@@ -99,7 +123,52 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    direction: rtl;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-persian);
+    direction: rtl;
+  }
+
+  /* RTL Support */
+  .ltr {
+    direction: ltr;
+  }
+
+  .rtl {
+    direction: rtl;
+  }
+}
+
+@layer components {
+  /* Persian ERP Components */
+  .card-financial {
+    @apply bg-card border border-border shadow-[var(--shadow-soft)] rounded-lg;
+    background: var(--gradient-card);
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground shadow-[var(--shadow-medium)] hover:bg-primary/90;
+    background: var(--gradient-primary);
+  }
+
+  .btn-success {
+    @apply bg-success text-success-foreground shadow-[var(--shadow-medium)] hover:bg-success/90;
+    background: var(--gradient-success);
+  }
+
+  .amount-positive {
+    @apply text-success font-semibold;
+  }
+
+  .amount-negative {
+    @apply text-destructive font-semibold;
+  }
+
+  .sidebar-nav {
+    @apply bg-card border-l border-border shadow-[var(--shadow-large)];
   }
 }
