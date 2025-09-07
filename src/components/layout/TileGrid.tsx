@@ -10,7 +10,18 @@ import {
   CreditCard,
   TrendingUp,
   Receipt,
-  Archive
+  Archive,
+  Import,
+  Download,
+  UserCheck,
+  DollarSign,
+  Bot,
+  Factory,
+  Landmark,
+  FileText,
+  Building,
+  UserCog,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -102,6 +113,86 @@ const tiles = [
     iconColor: "text-destructive"
   },
   {
+    id: "import-export",
+    title: "ورود و خروج داده",
+    description: "وارد و صادر کردن اطلاعات",
+    icon: Import,
+    color: "bg-blue-500/10",
+    iconColor: "text-blue-500"
+  },
+  {
+    id: "personnel",
+    title: "پرسنل",
+    description: "مدیریت اطلاعات پرسنل",
+    icon: UserCheck,
+    color: "bg-green-500/10",
+    iconColor: "text-green-500"
+  },
+  {
+    id: "salary",
+    title: "حقوق و دستمزد",
+    description: "محاسبه و پرداخت حقوق",
+    icon: DollarSign,
+    color: "bg-emerald-500/10",
+    iconColor: "text-emerald-500"
+  },
+  {
+    id: "automation",
+    title: "اتوماسیون",
+    description: "خودکارسازی فرآیندها",
+    icon: Bot,
+    color: "bg-purple-500/10",
+    iconColor: "text-purple-500"
+  },
+  {
+    id: "production",
+    title: "تولید",
+    description: "مدیریت فرآیند تولید",
+    icon: Factory,
+    color: "bg-orange-500/10",
+    iconColor: "text-orange-500"
+  },
+  {
+    id: "financial",
+    title: "مالی",
+    description: "مدیریت امور مالی",
+    icon: Landmark,
+    color: "bg-yellow-500/10",
+    iconColor: "text-yellow-500"
+  },
+  {
+    id: "contract-accounting",
+    title: "حسابداری قراردادی",
+    description: "مدیریت حسابداری قراردادها",
+    icon: FileText,
+    color: "bg-indigo-500/10",
+    iconColor: "text-indigo-500"
+  },
+  {
+    id: "government-accounting",
+    title: "حسابداری دولتی",
+    description: "حسابداری مطابق استانداردهای دولتی",
+    icon: Building,
+    color: "bg-red-500/10",
+    iconColor: "text-red-500"
+  },
+  {
+    id: "user-settings",
+    title: "تنظیمات کاربری",
+    description: "تنظیمات شخصی کاربر",
+    icon: UserCog,
+    color: "bg-cyan-500/10",
+    iconColor: "text-cyan-500"
+  },
+  {
+    id: "user-permissions",
+    title: "مجوزهای کاربری",
+    description: "مدیریت دسترسی‌های کاربران",
+    icon: Shield,
+    color: "bg-pink-500/10",
+    iconColor: "text-pink-500"
+  },
+  {
     id: "archive",
     title: "آرشیو",
     description: "آرشیو اسناد و مدارک",
@@ -111,8 +202,8 @@ const tiles = [
   },
   {
     id: "settings",
-    title: "تنظیمات",
-    description: "تنظیمات سیستم",
+    title: "تنظیمات سیستم",
+    description: "تنظیمات کلی سیستم",
     icon: Settings,
     color: "bg-card",
     iconColor: "text-card-foreground"

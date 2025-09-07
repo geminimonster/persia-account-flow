@@ -60,7 +60,17 @@ const Index = () => {
                       activeSection === "budget" ||
                       activeSection === "payments" ||
                       activeSection === "analytics" ||
-                      activeSection === "archive";
+                      activeSection === "archive" ||
+                      activeSection === "import-export" ||
+                      activeSection === "personnel" ||
+                      activeSection === "salary" ||
+                      activeSection === "automation" ||
+                      activeSection === "production" ||
+                      activeSection === "financial" ||
+                      activeSection === "contract-accounting" ||
+                      activeSection === "government-accounting" ||
+                      activeSection === "user-settings" ||
+                      activeSection === "user-permissions";
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
