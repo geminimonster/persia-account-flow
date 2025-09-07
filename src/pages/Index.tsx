@@ -1,5 +1,7 @@
 import { useState } from "react";
-import Sidebar from "@/components/layout/Sidebar";
+import { ThemeProvider } from "next-themes";
+import StatusBar from "@/components/layout/StatusBar";
+import TileGrid from "@/components/layout/TileGrid";
 import Dashboard from "@/components/Dashboard";
 import AccountsSection from "@/components/sections/AccountsSection";
 import TransactionsSection from "@/components/sections/TransactionsSection";
@@ -48,16 +50,35 @@ const Index = () => {
     }
   };
 
+  // Show tile grid for main menu, content for specific sections
+  const showTileGrid = activeSection === "dashboard" || 
+                      activeSection === "customers" || 
+                      activeSection === "suppliers" || 
+                      activeSection === "reports" || 
+                      activeSection === "settings" ||
+                      activeSection === "invoices" ||
+                      activeSection === "budget" ||
+                      activeSection === "payments" ||
+                      activeSection === "analytics" ||
+                      activeSection === "archive";
+
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar 
-        activeSection={activeSection} 
-        onSectionChange={setActiveSection} 
-      />
-      <main className="flex-1 p-8 overflow-auto">
-        {renderContent()}
-      </main>
-    </div>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <div className="min-h-screen bg-background">
+        <StatusBar />
+        
+        {showTileGrid ? (
+          <TileGrid 
+            activeSection={activeSection} 
+            onSectionChange={setActiveSection} 
+          />
+        ) : (
+          <main className="p-8">
+            {renderContent()}
+          </main>
+        )}
+      </div>
+    </ThemeProvider>
   );
 };
 
