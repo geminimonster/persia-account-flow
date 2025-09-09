@@ -5,6 +5,10 @@ import TileGrid from "@/components/layout/TileGrid";
 import Dashboard from "@/components/Dashboard";
 import AccountsSection from "@/components/sections/AccountsSection";
 import TransactionsSection from "@/components/sections/TransactionsSection";
+import FinancialPage from "@/pages/FinancialPage";
+import AutomationPage from "@/pages/AutomationPage";
+import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
+import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -17,6 +21,14 @@ const Index = () => {
         return <AccountsSection />;
       case "transactions":
         return <TransactionsSection />;
+      case "financial":
+        return <FinancialPage onBack={() => setActiveSection("dashboard")} />;
+      case "automation":
+        return <AutomationPage onBack={() => setActiveSection("dashboard")} />;
+      case "production":
+        return <IndustrialAccountingPage onBack={() => setActiveSection("dashboard")} />;
+      case "business-accounting":
+        return <BusinessAccountingPage onBack={() => setActiveSection("dashboard")} />;
       case "customers":
         return (
           <div className="text-center py-12">
@@ -64,9 +76,6 @@ const Index = () => {
                       activeSection === "import-export" ||
                       activeSection === "personnel" ||
                       activeSection === "salary" ||
-                      activeSection === "automation" ||
-                      activeSection === "production" ||
-                      activeSection === "financial" ||
                       activeSection === "contract-accounting" ||
                       activeSection === "government-accounting" ||
                       activeSection === "user-settings" ||

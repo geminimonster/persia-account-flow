@@ -146,11 +146,19 @@ const tiles = [
   },
   {
     id: "production",
-    title: "تولید",
-    description: "مدیریت فرآیند تولید",
+    title: "حسابداری صنعتی",
+    description: "مدیریت فرآیند تولید و صنعت",
     icon: Factory,
     color: "bg-orange-500/10",
     iconColor: "text-orange-500"
+  },
+  {
+    id: "business-accounting",
+    title: "حسابداری تجاری",
+    description: "حسابداری جامع کسب‌وکار",
+    icon: Building2,
+    color: "bg-blue-500/10",
+    iconColor: "text-blue-500"
   },
   {
     id: "financial",
