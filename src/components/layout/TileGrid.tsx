@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import ActionButtons from "@/components/layout/ActionButtons";
 
 interface TileGridProps {
   activeSection: string;
@@ -219,11 +220,57 @@ const tiles = [
 ];
 
 export default function TileGrid({ activeSection, onSectionChange }: TileGridProps) {
+  const handleNew = () => {
+    console.log("افزودن جدید");
+  };
+
+  const handleEdit = () => {
+    console.log("ویرایش");
+  };
+
+  const handleDelete = () => {
+    console.log("حذف");
+  };
+
+  const handleFullView = () => {
+    console.log("نمای کامل");
+  };
+
+  const handleSearch = (query: string) => {
+    console.log("جستجو:", query);
+  };
+
+  const handleFilter = () => {
+    console.log("فیلتر");
+  };
+
+  const handleExport = () => {
+    console.log("خروجی");
+  };
+
+  const handleImport = () => {
+    console.log("ورودی");
+  };
+
   return (
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">سیستم حسابداری جامع</h1>
         <p className="text-muted-foreground">یک بخش را برای شروع انتخاب کنید</p>
+      </div>
+
+      <div className="mb-6">
+        <ActionButtons
+          onNew={handleNew}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onFullView={handleFullView}
+          onSearch={handleSearch}
+          onFilter={handleFilter}
+          onExport={handleExport}
+          onImport={handleImport}
+          searchPlaceholder="جستجو در ماژول‌ها..."
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

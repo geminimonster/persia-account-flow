@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import StatusBar from "@/components/layout/StatusBar";
 import TileGrid from "@/components/layout/TileGrid";
+import Sidebar from "@/components/layout/Sidebar";
 import Dashboard from "@/components/Dashboard";
 import AccountsSection from "@/components/sections/AccountsSection";
 import TransactionsSection from "@/components/sections/TransactionsSection";
@@ -9,6 +10,7 @@ import FinancialPage from "@/pages/FinancialPage";
 import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -83,20 +85,34 @@ const Index = () => {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      <div className="min-h-screen bg-background">
-        <StatusBar />
-        
-        {showTileGrid ? (
-          <TileGrid 
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <Sidebar 
             activeSection={activeSection} 
             onSectionChange={setActiveSection} 
           />
-        ) : (
-          <main className="p-8">
-            {renderContent()}
-          </main>
-        )}
-      </div>
+          
+          <SidebarInset className="flex-1">
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+              <SidebarTrigger className="-ml-1" />
+              <div className="flex-1">
+                <StatusBar />
+              </div>
+            </header>
+            
+            {showTileGrid ? (
+              <TileGrid 
+                activeSection={activeSection} 
+                onSectionChange={setActiveSection} 
+              />
+            ) : (
+              <main className="p-8">
+                {renderContent()}
+              </main>
+            )}
+          </SidebarInset>
+        </div>
+      </SidebarProvider>
     </ThemeProvider>
   );
 };
