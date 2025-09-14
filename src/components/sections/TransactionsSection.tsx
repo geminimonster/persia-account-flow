@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { TableSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-layouts";
 
 interface Transaction {
   id: string;
@@ -14,6 +16,34 @@ interface Transaction {
 }
 
 export default function TransactionsSection() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeaderSkeleton />
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1">
+            <div className="relative">
+              <div className="animate-pulse bg-muted h-10 rounded-md"></div>
+            </div>
+          </div>
+          <div className="animate-pulse bg-muted w-20 h-10 rounded-md"></div>
+        </div>
+        <div className="bg-card border border-border rounded-lg">
+          <TableSkeleton rows={10} />
+        </div>
+      </div>
+    );
+  }
   const transactions: Transaction[] = [
     {
       id: '1',

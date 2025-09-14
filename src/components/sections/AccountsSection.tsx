@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { Plus, Search, MoreHorizontal, Wallet, TrendingUp, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AccountCardSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-layouts";
 
 interface Account {
   id: string;
@@ -12,6 +14,36 @@ interface Account {
 }
 
 export default function AccountsSection() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeaderSkeleton />
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1">
+            <AccountCardSkeleton />
+          </div>
+          <div className="flex gap-2">
+            <AccountCardSkeleton />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <AccountCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
   const accounts: Account[] = [
     {
       id: '1',

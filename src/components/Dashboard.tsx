@@ -1,10 +1,41 @@
+import { useState, useEffect } from "react";
 import DashboardStats from "./dashboard/DashboardStats";
 import RecentTransactions from "./dashboard/RecentTransactions";
 import FinancialChart from "./dashboard/FinancialChart";
 import { Calendar, Download, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { 
+  DashboardStatsSkeleton, 
+  RecentTransactionsSkeleton, 
+  FinancialChartSkeleton,
+  PageHeaderSkeleton 
+} from "@/components/ui/skeleton-layouts";
 
 export default function Dashboard() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeaderSkeleton />
+        <DashboardStatsSkeleton />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <FinancialChartSkeleton />
+          <RecentTransactionsSkeleton />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

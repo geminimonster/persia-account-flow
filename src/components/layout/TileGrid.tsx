@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { 
   LayoutDashboard, 
   Wallet, 
@@ -26,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ActionButtons from "@/components/layout/ActionButtons";
+import { TileGridSkeleton } from "@/components/ui/skeleton-layouts";
 
 interface TileGridProps {
   activeSection: string;
@@ -220,6 +222,19 @@ const tiles = [
 ];
 
 export default function TileGrid({ activeSection, onSectionChange }: TileGridProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [activeSection]);
+
+  if (isLoading) {
+    return <TileGridSkeleton />;
+  }
   const handleNew = () => {
     console.log("افزودن جدید");
   };
