@@ -6,6 +6,7 @@ import Sidebar from "@/components/layout/Sidebar";
 import Dashboard from "@/components/Dashboard";
 import AccountsSection from "@/components/sections/AccountsSection";
 import TransactionsSection from "@/components/sections/TransactionsSection";
+import AccountingVouchersPage from "@/pages/AccountingVouchersPage";
 import FinancialPage from "@/pages/FinancialPage";
 import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
@@ -23,6 +24,8 @@ const Index = () => {
         return <AccountsSection />;
       case "transactions":
         return <TransactionsSection />;
+      case "vouchers":
+        return <AccountingVouchersPage />;
       case "financial":
         return <FinancialPage onBack={() => setActiveSection("dashboard")} />;
       case "automation":
