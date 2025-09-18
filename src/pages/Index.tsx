@@ -90,17 +90,12 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
-          <Sidebar 
-            activeSection={activeSection} 
-            onSectionChange={setActiveSection} 
-          />
-          
           <SidebarInset className="flex-1">
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-              <SidebarTrigger className="-ml-1" />
               <div className="flex-1">
                 <StatusBar />
               </div>
+              <SidebarTrigger className="-mr-1" />
             </header>
             
             {showTileGrid ? (
@@ -109,11 +104,17 @@ const Index = () => {
                 onSectionChange={setActiveSection} 
               />
             ) : (
-              <main className="p-8">
+              <main className="p-8 animate-fade-in">
                 {renderContent()}
               </main>
             )}
           </SidebarInset>
+          
+          <Sidebar 
+            side="right"
+            activeSection={activeSection} 
+            onSectionChange={setActiveSection} 
+          />
         </div>
       </SidebarProvider>
     </ThemeProvider>

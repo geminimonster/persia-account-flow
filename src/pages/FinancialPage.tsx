@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, Landmark, TrendingUp, PieChart, BarChart3, Calculator, FileSpreadsheet, Receipt, CreditCard, Banknote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { AnimatedBackButton } from "@/components/ui/animated-back-button";
 
 interface FinancialPageProps {
   onBack: () => void;
@@ -89,15 +90,10 @@ export default function FinancialPage({ onBack }: FinancialPageProps) {
     const module = financialModules.find(m => m.id === selectedModule);
     return (
       <div className="p-8">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="ghost" size="sm" onClick={() => setSelectedModule(null)}>
-            <ArrowLeft className="w-4 h-4 ml-2" />
-            بازگشت
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">{module?.title}</h1>
-            <p className="text-muted-foreground">{module?.description}</p>
-          </div>
+        <AnimatedBackButton onClick={() => setSelectedModule(null)} />
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-foreground">{module?.title}</h1>
+          <p className="text-muted-foreground">{module?.description}</p>
         </div>
 
         <div className="bg-muted/30 rounded-lg p-8 text-center">
@@ -113,18 +109,13 @@ export default function FinancialPage({ onBack }: FinancialPageProps) {
 
   return (
     <div className="p-8">
-      <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="sm" onClick={onBack}>
-          <ArrowLeft className="w-4 h-4 ml-2" />
-          بازگشت به منوی اصلی
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-            <Landmark className="w-8 h-8 text-primary" />
-            مدیریت مالی
-          </h1>
-          <p className="text-muted-foreground">سیستم جامع مدیریت امور مالی</p>
-        </div>
+      <AnimatedBackButton onClick={onBack} text="بازگشت به منوی اصلی" />
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+          <Landmark className="w-8 h-8 text-primary" />
+          مدیریت مالی
+        </h1>
+        <p className="text-muted-foreground">سیستم جامع مدیریت امور مالی</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

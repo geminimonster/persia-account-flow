@@ -22,12 +22,32 @@ import {
   FileText,
   Building,
   UserCog,
-  Shield
+  Shield,
+  GripVertical
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ActionButtons from "@/components/layout/ActionButtons";
 import { TileGridSkeleton } from "@/components/ui/skeleton-layouts";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface TileGridProps {
   activeSection: string;
@@ -221,8 +241,86 @@ const tiles = [
   }
 ];
 
+interface SortableTileProps {
+  tile: typeof tiles[0];
+  isActive: boolean;
+  onSectionChange: (section: string) => void;
+}
+
+function SortableTile({ tile, isActive, onSectionChange }: SortableTileProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: tile.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const Icon = tile.icon;
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={`relative overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-[var(--shadow-medium)] hover:-translate-y-1 ${
+        isActive 
+          ? 'ring-2 ring-primary shadow-[var(--shadow-large)]' 
+          : 'hover:ring-2 hover:ring-primary/50'
+      } ${isDragging ? 'opacity-50 scale-105 shadow-[var(--shadow-large)]' : ''}`}
+      onClick={() => onSectionChange(tile.id)}
+    >
+      {/* Drag Handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 right-2 p-1 rounded hover:bg-muted/80 cursor-grab active:cursor-grabbing opacity-60 hover:opacity-100 transition-opacity"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <GripVertical className="w-4 h-4 text-muted-foreground" />
+      </div>
+
+      <div className="p-6">
+        <div className={`w-12 h-12 ${tile.color} rounded-lg flex items-center justify-center mb-4`}>
+          <Icon className={`w-6 h-6 ${tile.iconColor}`} />
+        </div>
+        
+        <h3 className="text-lg font-semibold text-foreground mb-2">
+          {tile.title}
+        </h3>
+        
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {tile.description}
+        </p>
+
+        {isActive && (
+          <div className="absolute top-2 left-2">
+            <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+          </div>
+        )}
+      </div>
+
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 pointer-events-none"></div>
+    </Card>
+  );
+}
+
 export default function TileGrid({ activeSection, onSectionChange }: TileGridProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [sortedTiles, setSortedTiles] = useState(tiles);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -231,6 +329,19 @@ export default function TileGrid({ activeSection, onSectionChange }: TileGridPro
 
     return () => clearTimeout(timer);
   }, [activeSection]);
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setSortedTiles((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over?.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
 
   if (isLoading) {
     return <TileGridSkeleton />;
@@ -288,47 +399,27 @@ export default function TileGrid({ activeSection, onSectionChange }: TileGridPro
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {tiles.map((tile) => {
-          const Icon = tile.icon;
-          const isActive = activeSection === tile.id;
-          
-          return (
-            <Card
-              key={tile.id}
-              className={`relative overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-[var(--shadow-medium)] hover:-translate-y-1 ${
-                isActive 
-                  ? 'ring-2 ring-primary shadow-[var(--shadow-large)]' 
-                  : 'hover:ring-2 hover:ring-primary/50'
-              }`}
-              onClick={() => onSectionChange(tile.id)}
-            >
-              <div className="p-6">
-                <div className={`w-12 h-12 ${tile.color} rounded-lg flex items-center justify-center mb-4`}>
-                  <Icon className={`w-6 h-6 ${tile.iconColor}`} />
-                </div>
-                
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {tile.title}
-                </h3>
-                
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {tile.description}
-                </p>
-
-                {isActive && (
-                  <div className="absolute top-2 left-2">
-                    <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-                  </div>
-                )}
-              </div>
-
-              {/* Subtle gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 pointer-events-none"></div>
-            </Card>
-          );
-        })}
-      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={sortedTiles.map(tile => tile.id)}
+          strategy={rectSortingStrategy}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {sortedTiles.map((tile) => (
+              <SortableTile
+                key={tile.id}
+                tile={tile}
+                isActive={activeSection === tile.id}
+                onSectionChange={onSectionChange}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }

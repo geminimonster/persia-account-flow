@@ -61,6 +61,7 @@ import {
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  side?: "left" | "right";
 }
 
 const navigationStructure = [
@@ -173,7 +174,7 @@ const navigationStructure = [
   }
 ];
 
-export default function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
+export default function Sidebar({ activeSection, onSectionChange, side = "right" }: SidebarProps) {
   const { open, toggleSidebar } = useSidebar();
   const [expandedGroups, setExpandedGroups] = useState<string[]>(["main-data"]);
 
