@@ -3,26 +3,32 @@ import { Plus, Search, MoreHorizontal, Wallet, TrendingUp, TrendingDown } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AccountCardSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-layouts";
-
-interface Account {
-  id: string;
-  name: string;
-  type: string;
-  balance: number;
-  change: number;
-  currency: string;
-}
+import { api, Account } from "../../services/api";
 
 export default function AccountsSection() {
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
+    const fetchAccounts = async () => {
+      try {
+        const data = await api.getAccounts();
+        setAccounts(data);
+      } catch (error) {
+        console.error('Failed to fetch accounts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchAccounts();
   }, []);
+
+  const filteredAccounts = accounts.filter(account =>
+    account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    account.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -44,46 +50,20 @@ export default function AccountsSection() {
       </div>
     );
   }
-  const accounts: Account[] = [
-    {
-      id: '1',
-      name: 'حساب جاری بانک ملی',
-      type: 'بانکی',
-      balance: 125000000,
-      change: 5.2,
-      currency: 'ریال'
-    },
-    {
-      id: '2', 
-      name: 'صندوق فروشگاه',
-      type: 'نقدی',
-      balance: 8500000,
-      change: -2.1,
-      currency: 'ریال'
-    },
-    {
-      id: '3',
-      name: 'حساب پس‌انداز',
-      type: 'بانکی', 
-      balance: 450000000,
-      change: 12.8,
-      currency: 'ریال'
-    },
-    {
-      id: '4',
-      name: 'حساب ارزی',
-      type: 'ارزی',
-      balance: 5000,
-      change: 8.5,
-      currency: 'دلار'
-    }
-  ];
 
-  const formatAmount = (amount: number, currency: string) => {
-    if (currency === 'دلار') {
-      return '$' + new Intl.NumberFormat('en-US').format(amount);
-    }
+  const formatAmount = (amount: number) => {
     return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
+  };
+
+  const getAccountTypeLabel = (type: string) => {
+    const typeLabels: { [key: string]: string } = {
+      'asset': 'دارایی',
+      'liability': 'بدهی',
+      'income': 'درآمد',
+      'expense': 'هزینه',
+      'equity': 'حقوق صاحبان سهام'
+    };
+    return typeLabels[type] || type;
   };
 
   return (
@@ -105,63 +85,68 @@ export default function AccountsSection() {
           <Input 
             placeholder="جستجو در حساب‌ها..." 
             className="pr-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <Button variant="outline">فیلتر</Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {accounts.map((account) => (
-          <div key={account.id} className="card-financial p-6 hover:shadow-medium transition-shadow">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Wallet className="w-5 h-5 text-primary" />
+      {filteredAccounts.length === 0 ? (
+        <div className="text-center py-12">
+          <Wallet className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            {searchTerm ? 'هیچ حسابی یافت نشد' : 'هیچ حسابی وجود ندارد'}
+          </h3>
+          <p className="text-muted-foreground">
+            {searchTerm ? 'لطفاً عبارت جستجو را تغییر دهید' : 'برای شروع، یک حساب جدید ایجاد کنید'}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredAccounts.map((account) => (
+            <div key={account.id} className="card-financial p-6 hover:shadow-medium transition-shadow">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Wallet className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">{account.name}</h3>
+                    <p className="text-sm text-muted-foreground">{getAccountTypeLabel(account.type)}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-foreground">{account.name}</h3>
-                  <p className="text-sm text-muted-foreground">{account.type}</p>
-                </div>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
               </div>
-              <Button variant="ghost" size="sm">
-                <MoreHorizontal className="w-4 h-4" />
-              </Button>
-            </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">موجودی:</span>
-                <span className="font-bold text-lg text-foreground">
-                  {formatAmount(account.balance, account.currency)}
-                </span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">تغییرات:</span>
-                <div className={`flex items-center gap-1 text-sm ${
-                  account.change > 0 ? 'text-success' : 'text-destructive'
-                }`}>
-                  {account.change > 0 ? (
-                    <TrendingUp className="w-4 h-4" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4" />
-                  )}
-                  {account.change > 0 ? '+' : ''}{account.change}%
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">شناسه:</span>
+                  <span className="font-mono text-sm text-foreground">#{account.id}</span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">تاریخ ایجاد:</span>
+                  <span className="text-sm text-foreground">
+                    {new Date(account.created_at).toLocaleDateString('fa-IR')}
+                  </span>
                 </div>
               </div>
-            </div>
 
-            <div className="flex gap-2 mt-4">
-              <Button size="sm" variant="outline" className="flex-1">
-                جزئیات
-              </Button>
-              <Button size="sm" className="flex-1">
-                تراکنش
-              </Button>
+              <div className="flex gap-2 mt-4">
+                <Button size="sm" variant="outline" className="flex-1">
+                  جزئیات
+                </Button>
+                <Button size="sm" className="flex-1">
+                  تراکنش
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

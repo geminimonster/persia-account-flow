@@ -11,6 +11,15 @@ import FinancialPage from "@/pages/FinancialPage";
 import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
+import CustomersPage from "@/pages/CustomersPage";
+import SuppliersPage from "@/pages/SuppliersPage";
+import ReportsPage from "@/pages/ReportsPage";
+import SettingsPage from "@/pages/SettingsPage";
+import InvoicesPage from "@/pages/InvoicesPage";
+import BudgetPage from "@/pages/BudgetPage";
+import PaymentsPage from "@/pages/PaymentsPage";
+import AnalyticsPage from "@/pages/AnalyticsPage";
+import ArchivePage from "@/pages/ArchivePage";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Index = () => {
@@ -35,33 +44,23 @@ const Index = () => {
       case "business-accounting":
         return <BusinessAccountingPage onBack={() => setActiveSection("dashboard")} />;
       case "customers":
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-foreground mb-2">مدیریت مشتریان</h2>
-            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
-          </div>
-        );
+        return <CustomersPage />;
       case "suppliers":
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-foreground mb-2">مدیریت تامین‌کنندگان</h2>
-            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
-          </div>
-        );
+        return <SuppliersPage />;
       case "reports":
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-foreground mb-2">گزارشات مالی</h2>
-            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
-          </div>
-        );
+        return <ReportsPage />;
       case "settings":
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-foreground mb-2">تنظیمات سیستم</h2>
-            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
-          </div>
-        );
+        return <SettingsPage />;
+      case "invoices":
+        return <InvoicesPage />;
+      case "budget":
+        return <BudgetPage />;
+      case "payments":
+        return <PaymentsPage />;
+      case "analytics":
+        return <AnalyticsPage />;
+      case "archive":
+        return <ArchivePage />;
       default:
         return <Dashboard />;
     }

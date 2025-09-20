@@ -7,13 +7,24 @@ import {
   Moon, 
   Sun, 
   Search,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function StatusBar() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { theme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -104,17 +115,43 @@ export default function StatusBar() {
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center gap-3">
-          <div className="text-right hidden sm:block">
-            <div className="text-sm font-medium text-foreground">احمد محمدی</div>
-            <div className="text-xs text-muted-foreground">مدیر مالی</div>
-          </div>
-          <Button variant="ghost" size="sm" className="p-1">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-primary-foreground" />
-            </div>
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="flex items-center gap-3 p-1">
+              <div className="text-right hidden sm:block">
+                <div className="text-sm font-medium text-foreground">{user?.name || 'کاربر'}</div>
+                <div className="text-xs text-muted-foreground">{user?.role === 'admin' ? 'مدیر سیستم' : 'کاربر'}</div>
+              </div>
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-primary-foreground" />
+              </div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{user?.name}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>پروفایل</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>تنظیمات</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logout} className="text-destructive">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>خروج</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

@@ -3,28 +3,37 @@ import { Plus, Search, Filter, ArrowUpRight, ArrowDownLeft, Calendar } from "luc
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton-layouts";
-
-interface Transaction {
-  id: string;
-  date: string;
-  description: string;
-  category: string;
-  account: string;
-  type: 'income' | 'expense';
-  amount: number;
-  status: 'completed' | 'pending' | 'cancelled';
-}
+import { api, Transaction, Account } from "../../services/api";
 
 export default function TransactionsSection() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const fetchData = async () => {
+      try {
+        const [transactionsData, accountsData] = await Promise.all([
+          api.getTransactions(undefined, 50),
+          api.getAccounts()
+        ]);
+        setTransactions(transactionsData);
+        setAccounts(accountsData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchData();
   }, []);
+
+  const filteredTransactions = transactions.filter(transaction =>
+    transaction.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    transaction.amount.toString().includes(searchTerm)
+  );
 
   if (isLoading) {
     return (
@@ -44,78 +53,29 @@ export default function TransactionsSection() {
       </div>
     );
   }
-  const transactions: Transaction[] = [
-    {
-      id: '1',
-      date: '۱۴۰۳/۰۶/۱۵',
-      description: 'فروش محصولات به شرکت ABC',
-      category: 'فروش',
-      account: 'حساب جاری بانک ملی',
-      type: 'income',
-      amount: 15000000,
-      status: 'completed'
-    },
-    {
-      id: '2',
-      date: '۱۴۰۳/۰۶/۱۴',
-      description: 'خرید مواد اولیه',
-      category: 'خرید',
-      account: 'حساب جاری بانک ملی',
-      type: 'expense',
-      amount: 8500000,
-      status: 'completed'
-    },
-    {
-      id: '3',
-      date: '۱۴۰۳/۰۶/۱۳',
-      description: 'دریافت وجه از مشتری',
-      category: 'دریافتی',
-      account: 'صندوق فروشگاه',
-      type: 'income',
-      amount: 3200000,
-      status: 'pending'
-    },
-    {
-      id: '4',
-      date: '۱۴۰۳/۰۶/۱۲',
-      description: 'پرداخت حقوق کارکنان',
-      category: 'حقوق',
-      account: 'حساب جاری بانک ملی',
-      type: 'expense',
-      amount: 12000000,
-      status: 'completed'
-    },
-    {
-      id: '5',
-      date: '۱۴۰۳/۰۶/۱۱',
-      description: 'فروش خدمات مشاوره',
-      category: 'خدمات',
-      account: 'حساب پس‌انداز',
-      type: 'income',
-      amount: 2800000,
-      status: 'completed'
-    }
-  ];
 
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'text-success bg-success/10';
-      case 'pending': return 'text-warning bg-warning/10';
-      case 'cancelled': return 'text-destructive bg-destructive/10';
-      default: return 'text-muted-foreground bg-muted/10';
-    }
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('fa-IR');
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'completed': return 'تکمیل شده';
-      case 'pending': return 'در انتظار';
-      case 'cancelled': return 'لغو شده';
-      default: return status;
+  const getAccountName = (accountId: number) => {
+    const account = accounts.find(acc => acc.id === accountId);
+    return account?.name || `حساب #${accountId}`;
+  };
+
+  const getTransactionType = (amount: number) => {
+    return amount >= 0 ? 'income' : 'expense';
+  };
+
+  const getTransactionCategory = (type: string) => {
+    switch (type) {
+      case 'income': return 'درآمد';
+      case 'expense': return 'هزینه';
+      default: return 'سایر';
     }
   };
 
@@ -138,6 +98,8 @@ export default function TransactionsSection() {
           <Input 
             placeholder="جستجو در تراکنش‌ها..." 
             className="pr-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <Button variant="outline" className="gap-2">
@@ -160,52 +122,61 @@ export default function TransactionsSection() {
                 <th className="text-right p-4 font-semibold text-foreground">دسته‌بندی</th>
                 <th className="text-right p-4 font-semibold text-foreground">حساب</th>
                 <th className="text-right p-4 font-semibold text-foreground">مبلغ</th>
-                <th className="text-right p-4 font-semibold text-foreground">وضعیت</th>
                 <th className="text-right p-4 font-semibold text-foreground">عملیات</th>
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => (
-                <tr key={transaction.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                  <td className="p-4 text-muted-foreground">{transaction.date}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${
-                        transaction.type === 'income' 
-                          ? 'bg-success/10 text-success' 
-                          : 'bg-destructive/10 text-destructive'
-                      }`}>
-                        {transaction.type === 'income' ? (
-                          <ArrowUpRight className="w-4 h-4" />
-                        ) : (
-                          <ArrowDownLeft className="w-4 h-4" />
-                        )}
-                      </div>
-                      <span className="font-medium text-foreground">{transaction.description}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-muted-foreground">{transaction.category}</td>
-                  <td className="p-4 text-muted-foreground">{transaction.account}</td>
-                  <td className="p-4">
-                    <span className={`font-semibold ${
-                      transaction.type === 'income' ? 'amount-positive' : 'amount-negative'
-                    }`}>
-                      {transaction.type === 'income' ? '+' : '-'}{formatAmount(transaction.amount)}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(transaction.status)}`}>
-                      {getStatusText(transaction.status)}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline">ویرایش</Button>
-                      <Button size="sm" variant="outline">حذف</Button>
-                    </div>
+              {filteredTransactions.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-muted-foreground">
+                    {searchTerm ? 'هیچ تراکنشی یافت نشد' : 'هیچ تراکنشی وجود ندارد'}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredTransactions.map((transaction) => {
+                  const type = getTransactionType(transaction.amount);
+                  const category = getTransactionCategory(type);
+                  
+                  return (
+                    <tr key={transaction.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                      <td className="p-4 text-muted-foreground">{formatDate(transaction.date)}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-lg ${
+                            type === 'income' 
+                              ? 'bg-success/10 text-success' 
+                              : 'bg-destructive/10 text-destructive'
+                          }`}>
+                            {type === 'income' ? (
+                              <ArrowUpRight className="w-4 h-4" />
+                            ) : (
+                              <ArrowDownLeft className="w-4 h-4" />
+                            )}
+                          </div>
+                          <span className="font-medium text-foreground">
+                            {transaction.description || 'تراکنش بدون توضیح'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-muted-foreground">{category}</td>
+                      <td className="p-4 text-muted-foreground">{getAccountName(transaction.account_id)}</td>
+                      <td className="p-4">
+                        <span className={`font-semibold ${
+                          type === 'income' ? 'text-success' : 'text-destructive'
+                        }`}>
+                          {type === 'income' ? '+' : ''}{formatAmount(transaction.amount)}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="outline">ویرایش</Button>
+                          <Button size="sm" variant="outline">حذف</Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

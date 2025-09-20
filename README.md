@@ -60,6 +60,40 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Backend API (FastAPI)
+
+Backend lives in `backend/`.
+
+Setup on Windows PowerShell:
+```
+python -m venv .venv
+. .venv/Scripts/Activate.ps1
+pip install -r backend/requirements.txt
+uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
+```
+
+Seed demo data (optional):
+```
+python -m backend.seed
+```
+
+Swagger docs: http://localhost:8000/docs
+
+### Vite dev proxy (optional)
+
+If you want to call the API using relative paths during development, add this to `vite.config.ts`:
+
+```ts
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8000',
+      changeOrigin: true,
+    },
+  },
+}
+```
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/656a9113-5318-4400-9542-b37a7874d579) and click on Share -> Publish.

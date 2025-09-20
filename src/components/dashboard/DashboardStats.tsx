@@ -1,4 +1,6 @@
 import { TrendingUp, TrendingDown, DollarSign, CreditCard, Users, Receipt } from "lucide-react";
+import { useState, useEffect } from "react";
+import { api, DashboardSummary } from "../../services/api";
 
 interface StatCardProps {
   title: string;
@@ -33,31 +35,66 @@ function StatCard({ title, value, change, changeType, icon }: StatCardProps) {
 }
 
 export default function DashboardStats() {
+  const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const data = await api.getDashboardSummary();
+        setSummary(data);
+      } catch (error) {
+        console.error('Failed to fetch dashboard summary:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSummary();
+  }, []);
+
+  const formatAmount = (amount: number) => {
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
+  };
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, index) => (
+          <div key={index} className="card-financial p-6 animate-pulse">
+            <div className="h-8 bg-muted rounded mb-2"></div>
+            <div className="h-4 bg-muted rounded w-3/4"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const stats = [
     {
-      title: "کل درآمد",
-      value: "۲۵۰,۰۰۰,۰۰۰ ریال",
+      title: "کل موجودی",
+      value: summary ? formatAmount(summary.total_balance) : "۰ ریال",
       change: "+۱۲.۵%",
       changeType: 'positive' as const,
       icon: <DollarSign className="w-6 h-6 text-primary" />
     },
     {
-      title: "کل هزینه‌ها",
-      value: "۱۸۰,۰۰۰,۰۰۰ ریال",
-      change: "-۵.۲%",
+      title: "تعداد حساب‌ها",
+      value: summary ? summary.accounts_count.toString() : "۰",
+      change: "+۸.۳%",
       changeType: 'positive' as const,
       icon: <CreditCard className="w-6 h-6 text-primary" />
     },
     {
-      title: "تعداد مشتریان",
-      value: "۱,۲۳۴",
+      title: "تعداد تراکنش‌ها",
+      value: summary ? summary.transactions_count.toString() : "۰",
       change: "+۸.۳%",
       changeType: 'positive' as const,
       icon: <Users className="w-6 h-6 text-primary" />
     },
     {
-      title: "تراکنش‌های امروز",
-      value: "۸۷",
+      title: "تراکنش‌های اخیر",
+      value: "۱۰",
       change: "-۲.۱%",
       changeType: 'negative' as const,
       icon: <Receipt className="w-6 h-6 text-primary" />

@@ -1,18 +1,52 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-const data = [
-  { month: 'فروردین', income: 45000000, expense: 32000000 },
-  { month: 'اردیبهشت', income: 52000000, expense: 38000000 },
-  { month: 'خرداد', income: 48000000, expense: 35000000 },
-  { month: 'تیر', income: 61000000, expense: 42000000 },
-  { month: 'مرداد', income: 55000000, expense: 40000000 },
-  { month: 'شهریور', income: 67000000, expense: 45000000 },
-];
+import { useState, useEffect } from "react";
+import { api, ChartPoint } from "../../services/api";
 
 export default function FinancialChart() {
+  const [chartData, setChartData] = useState<ChartPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const data = await api.getChartData(30);
+        setChartData(data);
+      } catch (error) {
+        console.error('Failed to fetch chart data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChartData();
+  }, []);
+
   const formatAmount = (value: number) => {
     return (value / 1000000).toFixed(0) + 'M';
   };
+
+  const formatPersianAmount = (value: number) => {
+    return new Intl.NumberFormat('fa-IR').format(value) + ' ریال';
+  };
+
+  if (loading) {
+    return (
+      <div className="card-financial p-6">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-foreground mb-2">نمودار درآمد و هزینه</h2>
+          <p className="text-muted-foreground">مقایسه درآمد و هزینه‌های ماهانه</p>
+        </div>
+        <div className="h-80 bg-muted animate-pulse rounded"></div>
+      </div>
+    );
+  }
+
+  // Transform API data to chart format
+  const transformedData = chartData.map((point, index) => ({
+    date: new Date(point.date).toLocaleDateString('fa-IR', { month: 'short' }),
+    income: point.value >= 0 ? point.value : 0,
+    expense: point.value < 0 ? Math.abs(point.value) : 0,
+  }));
 
   return (
     <div className="card-financial p-6">
@@ -23,10 +57,10 @@ export default function FinancialChart() {
 
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={transformedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
             <XAxis 
-              dataKey="month" 
+              dataKey="date" 
               stroke="hsl(var(--muted-foreground))"
               fontSize={12}
             />
@@ -43,7 +77,7 @@ export default function FinancialChart() {
                 color: 'hsl(var(--foreground))'
               }}
               formatter={(value: number, name: string) => [
-                new Intl.NumberFormat('fa-IR').format(value) + ' ریال',
+                formatPersianAmount(value),
                 name === 'income' ? 'درآمد' : 'هزینه'
               ]}
             />
