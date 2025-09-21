@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import StatusBar from "@/components/layout/StatusBar";
 import TileGrid from "@/components/layout/TileGrid";
@@ -11,10 +11,25 @@ import FinancialPage from "@/pages/FinancialPage";
 import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
+import FirstTimeSetup from "@/components/FirstTimeSetup";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [isSetupComplete, setIsSetupComplete] = useState(false);
+
+  useEffect(() => {
+    const setupCompleted = localStorage.getItem('setupCompleted');
+    setIsSetupComplete(setupCompleted === 'true');
+  }, []);
+
+  const handleSetupComplete = () => {
+    setIsSetupComplete(true);
+  };
+
+  if (!isSetupComplete) {
+    return <FirstTimeSetup onComplete={handleSetupComplete} />;
+  }
 
   const renderContent = () => {
     switch (activeSection) {
@@ -25,7 +40,7 @@ const Index = () => {
       case "transactions":
         return <TransactionsSection />;
       case "vouchers":
-        return <AccountingVouchersPage />;
+        return <AccountingVouchersPage onBack={() => setActiveSection("dashboard")} />;
       case "financial":
         return <FinancialPage onBack={() => setActiveSection("dashboard")} />;
       case "automation":
