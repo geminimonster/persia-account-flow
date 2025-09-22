@@ -12,20 +12,32 @@ import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
 import FirstTimeSetup from "@/components/FirstTimeSetup";
+import UserAgreement from "@/components/UserAgreement";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [hasAcceptedAgreement, setHasAcceptedAgreement] = useState(false);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
 
   useEffect(() => {
+    const agreementAccepted = localStorage.getItem('userAgreementAccepted');
     const setupCompleted = localStorage.getItem('setupCompleted');
+    setHasAcceptedAgreement(agreementAccepted === 'true');
     setIsSetupComplete(setupCompleted === 'true');
   }, []);
+
+  const handleAgreementAccept = () => {
+    setHasAcceptedAgreement(true);
+  };
 
   const handleSetupComplete = () => {
     setIsSetupComplete(true);
   };
+
+  if (!hasAcceptedAgreement) {
+    return <UserAgreement onAccept={handleAgreementAccept} />;
+  }
 
   if (!isSetupComplete) {
     return <FirstTimeSetup onComplete={handleSetupComplete} />;
@@ -105,12 +117,18 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
+          <Sidebar 
+            side="left"
+            activeSection={activeSection} 
+            onSectionChange={setActiveSection} 
+          />
+          
           <SidebarInset className="flex-1">
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+              <SidebarTrigger className="-ml-1" />
               <div className="flex-1">
                 <StatusBar />
               </div>
-              <SidebarTrigger className="-mr-1" />
             </header>
             
             {showTileGrid ? (
@@ -124,12 +142,6 @@ const Index = () => {
               </main>
             )}
           </SidebarInset>
-          
-          <Sidebar 
-            side="right"
-            activeSection={activeSection} 
-            onSectionChange={setActiveSection} 
-          />
         </div>
       </SidebarProvider>
     </ThemeProvider>

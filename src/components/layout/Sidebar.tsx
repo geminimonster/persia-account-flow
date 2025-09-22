@@ -174,7 +174,7 @@ const navigationStructure = [
   }
 ];
 
-export default function Sidebar({ activeSection, onSectionChange, side = "right" }: SidebarProps) {
+export default function Sidebar({ activeSection, onSectionChange, side = "left" }: SidebarProps) {
   const { open, toggleSidebar } = useSidebar();
   const [expandedGroups, setExpandedGroups] = useState<string[]>(["main-data"]);
 
