@@ -15,6 +15,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import ActionButtons from "@/components/layout/ActionButtons";
 import { DashboardStatsSkeleton, TableSkeleton } from "@/components/ui/skeleton-layouts";
+import { AnimatedBackButton } from "@/components/ui/animated-back-button";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
 import { 
@@ -55,7 +56,11 @@ interface Voucher {
   entries: VoucherEntry[];
 }
 
-export default function AccountingVouchersPage() {
+interface AccountingVouchersPageProps {
+  onBack?: () => void;
+}
+
+export default function AccountingVouchersPage({ onBack }: AccountingVouchersPageProps = {}) {
   const [loading, setLoading] = useState(true);
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
@@ -173,6 +178,7 @@ export default function AccountingVouchersPage() {
 
   return (
     <div className="p-6 space-y-6" dir="rtl">
+      {onBack && <AnimatedBackButton onClick={onBack} text="بازگشت به منوی اصلی" />}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">اسناد حسابداری</h1>

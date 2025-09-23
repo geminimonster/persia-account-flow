@@ -27,3 +27,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 # Start the application
 CMD ["serve", "-s", "dist", "-l", "8080"]
 
+

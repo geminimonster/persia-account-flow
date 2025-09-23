@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import StatusBar from "@/components/layout/StatusBar";
 import TileGrid from "@/components/layout/TileGrid";
@@ -11,19 +11,25 @@ import FinancialPage from "@/pages/FinancialPage";
 import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
-import CustomersPage from "@/pages/CustomersPage";
-import SuppliersPage from "@/pages/SuppliersPage";
-import ReportsPage from "@/pages/ReportsPage";
-import SettingsPage from "@/pages/SettingsPage";
-import InvoicesPage from "@/pages/InvoicesPage";
-import BudgetPage from "@/pages/BudgetPage";
-import PaymentsPage from "@/pages/PaymentsPage";
-import AnalyticsPage from "@/pages/AnalyticsPage";
-import ArchivePage from "@/pages/ArchivePage";
+import FirstTimeSetup from "@/components/FirstTimeSetup";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [isSetupComplete, setIsSetupComplete] = useState(false);
+
+  useEffect(() => {
+    const setupCompleted = localStorage.getItem('setupCompleted');
+    setIsSetupComplete(setupCompleted === 'true');
+  }, []);
+
+  const handleSetupComplete = () => {
+    setIsSetupComplete(true);
+  };
+
+  if (!isSetupComplete) {
+    return <FirstTimeSetup onComplete={handleSetupComplete} />;
+  }
 
   const renderContent = () => {
     switch (activeSection) {
@@ -34,7 +40,7 @@ const Index = () => {
       case "transactions":
         return <TransactionsSection />;
       case "vouchers":
-        return <AccountingVouchersPage />;
+        return <AccountingVouchersPage onBack={() => setActiveSection("dashboard")} />;
       case "financial":
         return <FinancialPage onBack={() => setActiveSection("dashboard")} />;
       case "automation":
@@ -44,23 +50,33 @@ const Index = () => {
       case "business-accounting":
         return <BusinessAccountingPage onBack={() => setActiveSection("dashboard")} />;
       case "customers":
-        return <CustomersPage />;
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-semibold text-foreground mb-2">مدیریت مشتریان</h2>
+            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
+          </div>
+        );
       case "suppliers":
-        return <SuppliersPage />;
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-semibold text-foreground mb-2">مدیریت تامین‌کنندگان</h2>
+            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
+          </div>
+        );
       case "reports":
-        return <ReportsPage />;
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-semibold text-foreground mb-2">گزارشات مالی</h2>
+            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
+          </div>
+        );
       case "settings":
-        return <SettingsPage />;
-      case "invoices":
-        return <InvoicesPage />;
-      case "budget":
-        return <BudgetPage />;
-      case "payments":
-        return <PaymentsPage />;
-      case "analytics":
-        return <AnalyticsPage />;
-      case "archive":
-        return <ArchivePage />;
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-xl font-semibold text-foreground mb-2">تنظیمات سیستم</h2>
+            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
+          </div>
+        );
       default:
         return <Dashboard />;
     }
@@ -89,17 +105,12 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
-          <Sidebar 
-            activeSection={activeSection} 
-            onSectionChange={setActiveSection} 
-          />
-          
           <SidebarInset className="flex-1">
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-              <SidebarTrigger className="-ml-1" />
               <div className="flex-1">
                 <StatusBar />
               </div>
+              <SidebarTrigger className="-mr-1" />
             </header>
             
             {showTileGrid ? (
@@ -108,11 +119,17 @@ const Index = () => {
                 onSectionChange={setActiveSection} 
               />
             ) : (
-              <main className="p-8">
+              <main className="p-8 animate-fade-in">
                 {renderContent()}
               </main>
             )}
           </SidebarInset>
+          
+          <Sidebar 
+            side="right"
+            activeSection={activeSection} 
+            onSectionChange={setActiveSection} 
+          />
         </div>
       </SidebarProvider>
     </ThemeProvider>

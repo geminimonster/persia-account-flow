@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginFormData {
   email: string;
@@ -15,6 +16,7 @@ interface LoginFormData {
 }
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -35,9 +37,6 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
       // Simple validation
       if (!formData.email || !formData.password) {
         throw new Error('لطفاً تمام فیلدها را پر کنید');
@@ -51,13 +50,13 @@ export default function LoginPage() {
         throw new Error('رمز عبور باید حداقل ۶ کاراکتر باشد');
       }
 
-      // Simulate successful login
-      console.log('Login successful:', formData);
-      // Here you would typically:
-      // 1. Call your authentication API
-      // 2. Store the token
-      // 3. Redirect to dashboard
-      
+      // Call the login function from AuthContext
+      const success = await login(formData.email, formData.password);
+      if (!success) {
+        throw new Error('اطلاعات ورود نادرست است');
+      }
+
+      // Login successful, ProtectedRoute will handle the next step
     } catch (err) {
       setError(err instanceof Error ? err.message : 'خطایی رخ داده است');
     } finally {

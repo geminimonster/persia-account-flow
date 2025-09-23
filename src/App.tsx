@@ -7,6 +7,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import UserAgreement from "./components/UserAgreement"; // اضافه کنید
+
 
 const queryClient = new QueryClient();
 
@@ -18,6 +20,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/user-agreement" element={<UserAgreement onAccept={() => {/* مسیر بعدی */}} />} />
+    
             <Route path="/" element={
               <ProtectedRoute>
                 <Index />
