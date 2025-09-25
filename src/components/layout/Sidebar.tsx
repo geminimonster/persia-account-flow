@@ -62,6 +62,7 @@ interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
   side?: "left" | "right";
+  dir?: "ltr" | "rtl";
 }
 
 const navigationStructure = [
@@ -174,7 +175,7 @@ const navigationStructure = [
   }
 ];
 
-export default function Sidebar({ activeSection, onSectionChange, side = "left" }: SidebarProps) {
+export default function Sidebar({ activeSection, onSectionChange, side = "left", dir = "rtl" }: SidebarProps) {
   const { open, toggleSidebar } = useSidebar();
   const [expandedGroups, setExpandedGroups] = useState<string[]>(["main-data"]);
 
@@ -245,30 +246,32 @@ export default function Sidebar({ activeSection, onSectionChange, side = "left" 
   };
 
   return (
-    <SidebarContainer className="border-l-0 border-r">
-      <SidebarHeader className="border-b p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Calculator className="w-5 h-5 text-primary-foreground" />
-            </div>
-            {open && (
-              <div>
-                <h2 className="font-bold text-sidebar-foreground">سیستم حسابداری</h2>
-                <p className="text-xs text-sidebar-foreground/70">مدیریت مالی هوشمند</p>
+    <div dir={dir}>
+      <SidebarContainer className="border-l-0 border-r">
+        <SidebarHeader className="border-b p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Calculator className="w-5 h-5 text-primary-foreground" />
               </div>
-            )}
+              {open && (
+                <div>
+                  <h2 className="font-bold text-sidebar-foreground">سیستم حسابداری</h2>
+                  <p className="text-xs text-sidebar-foreground/70">مدیریت مالی هوشمند</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </SidebarHeader>
+        </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
-            {navigationStructure.map((group) => renderMenuItem(group))}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
-    </SidebarContainer>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarMenu>
+              {navigationStructure.map((group) => renderMenuItem(group))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+      </SidebarContainer>
+    </div>
   );
 }

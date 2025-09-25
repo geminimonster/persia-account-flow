@@ -16,12 +16,15 @@ const queryClient = new QueryClient();
 const App = () => {
   const [agreementAccepted, setAgreementAccepted] = useState(false);
   const [setupCompleted, setSetupCompleted] = useState(false);
+  const [language, setLanguage] = useState(localStorage.getItem('language') || 'fa');
 
   useEffect(() => {
     const accepted = localStorage.getItem('userAgreementAccepted') === 'true';
     const setupDone = localStorage.getItem('setupCompleted') === 'true';
+    const lang = localStorage.getItem('language') || 'fa';
     setAgreementAccepted(accepted);
     setSetupCompleted(setupDone);
+    setLanguage(lang);
   }, []);
 
   const handleAgreementAccept = () => {
@@ -30,6 +33,11 @@ const App = () => {
 
   const handleSetupComplete = () => {
     setSetupCompleted(true);
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    localStorage.setItem('language', lang);
   };
 
   if (!agreementAccepted) {
@@ -57,25 +65,27 @@ const App = () => {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Index />
-                </ProtectedRoute>
-              } />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <div dir={language === 'en' ? 'ltr' : 'rtl'}>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Index language={language} onLanguageChange={handleLanguageChange} />
+                  </ProtectedRoute>
+                } />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </div>
   );
 };
 

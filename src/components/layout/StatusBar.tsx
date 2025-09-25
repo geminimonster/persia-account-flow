@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { 
-  Bell, 
-  Settings, 
-  User, 
-  Moon, 
-  Sun, 
+import {
+  Bell,
+  Settings,
+  User,
+  Moon,
+  Sun,
   Search,
-  Menu,
-  LogOut
+  LogOut,
+  Languages
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useAuth } from "../../contexts/AuthContext";
@@ -21,7 +21,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function StatusBar() {
+interface StatusBarProps {
+  language: string;
+  onLanguageChange: (lang: string) => void;
+}
+
+export default function StatusBar({ language, onLanguageChange }: StatusBarProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
@@ -54,11 +59,25 @@ export default function StatusBar() {
 
   return (
     <div className="h-16 bg-card border-b border-border shadow-[var(--shadow-soft)] px-6 flex items-center justify-between">
-      {/* Right side - Logo and Menu */}
+      {/* Right side - Logo and Language */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" className="p-2">
-          <Menu className="w-5 h-5" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="p-2">
+              <Languages className="w-5 h-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onLanguageChange('fa')}>
+              <span className="mr-2">🇮🇷</span>
+              <span>فارسی</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onLanguageChange('en')}>
+              <span className="mr-2">🇺🇸</span>
+              <span>English</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm">ح</span>

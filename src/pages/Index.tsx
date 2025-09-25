@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Home } from "lucide-react";
 import StatusBar from "@/components/layout/StatusBar";
 import TileGrid from "@/components/layout/TileGrid";
 import Sidebar from "@/components/layout/Sidebar";
@@ -12,9 +14,15 @@ import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
 import FirstTimeSetup from "@/components/FirstTimeSetup";
+import SystemSettings from "@/components/SystemSettings";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
-const Index = () => {
+interface IndexProps {
+  language: string;
+  onLanguageChange: (lang: string) => void;
+}
+
+const Index = ({ language, onLanguageChange }: IndexProps) => {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [isSetupComplete, setIsSetupComplete] = useState(false);
 
@@ -71,12 +79,7 @@ const Index = () => {
           </div>
         );
       case "settings":
-        return (
-          <div className="text-center py-12">
-            <h2 className="text-xl font-semibold text-foreground mb-2">تنظیمات سیستم</h2>
-            <p className="text-muted-foreground">این بخش در حال توسعه است...</p>
-          </div>
-        );
+        return <SystemSettings />;
       default:
         return <Dashboard />;
     }
@@ -108,7 +111,7 @@ const Index = () => {
           <SidebarInset className="flex-1">
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
               <div className="flex-1">
-                <StatusBar />
+                <StatusBar language={language} onLanguageChange={onLanguageChange} />
               </div>
               <SidebarTrigger className="-mr-1" />
             </header>
@@ -120,15 +123,26 @@ const Index = () => {
               />
             ) : (
               <main className="p-8 animate-fade-in">
+                <div className="flex gap-2 mb-4">
+                  <Button onClick={() => setActiveSection("dashboard")} variant="outline">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    برگشت
+                  </Button>
+                  <Button onClick={() => setActiveSection("dashboard")}>
+                    <Home className="w-4 h-4 mr-2" />
+                    داشبورد
+                  </Button>
+                </div>
                 {renderContent()}
               </main>
             )}
           </SidebarInset>
           
-          <Sidebar 
+          <Sidebar
             side="right"
-            activeSection={activeSection} 
-            onSectionChange={setActiveSection} 
+            dir={language === 'en' ? 'ltr' : 'rtl'}
+            activeSection={activeSection}
+            onSectionChange={setActiveSection}
           />
         </div>
       </SidebarProvider>
