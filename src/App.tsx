@@ -9,19 +9,27 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import UserAgreement from "./components/UserAgreement";
+import FirstTimeSetup from "./components/FirstTimeSetup";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [agreementAccepted, setAgreementAccepted] = useState(false);
+  const [setupCompleted, setSetupCompleted] = useState(false);
 
   useEffect(() => {
     const accepted = localStorage.getItem('userAgreementAccepted') === 'true';
+    const setupDone = localStorage.getItem('setupCompleted') === 'true';
     setAgreementAccepted(accepted);
+    setSetupCompleted(setupDone);
   }, []);
 
   const handleAgreementAccept = () => {
     setAgreementAccepted(true);
+  };
+
+  const handleSetupComplete = () => {
+    setSetupCompleted(true);
   };
 
   if (!agreementAccepted) {
@@ -31,6 +39,18 @@ const App = () => {
           <Toaster />
           <Sonner />
           <UserAgreement onAccept={handleAgreementAccept} />
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  if (agreementAccepted && !setupCompleted) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <FirstTimeSetup onComplete={handleSetupComplete} />
         </TooltipProvider>
       </QueryClientProvider>
     );
