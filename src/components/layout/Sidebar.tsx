@@ -247,7 +247,7 @@ export default function Sidebar({ activeSection, onSectionChange, side = "left",
 
   return (
     <div dir={dir}>
-      <SidebarContainer className="border-l-0 border-r">
+      <SidebarContainer className={cn("border-l-0 border-r", side === "left" ? "border-r-0 border-l" : "border-l-0 border-r")}>
         <SidebarHeader className="border-b p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

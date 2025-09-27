@@ -111,12 +111,18 @@ const Index = ({ language, onLanguageChange }: IndexProps) => {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
+          <Sidebar
+            side="left"
+            dir={language === 'en' ? 'ltr' : 'rtl'}
+            activeSection={activeSection}
+            onSectionChange={setActiveSection}
+          />
           <SidebarInset className="flex-1">
             <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
               <div className="flex-1">
                 <StatusBar language={language} onLanguageChange={onLanguageChange} />
               </div>
-              <SidebarTrigger className="-mr-1" />
+              <SidebarTrigger className="-ml-1" />
             </header>
             
             {showTileGrid ? (
@@ -140,13 +146,6 @@ const Index = ({ language, onLanguageChange }: IndexProps) => {
               </main>
             )}
           </SidebarInset>
-          
-          <Sidebar
-            side="right"
-            dir={language === 'en' ? 'ltr' : 'rtl'}
-            activeSection={activeSection}
-            onSectionChange={setActiveSection}
-          />
         </div>
       </SidebarProvider>
     </ThemeProvider>

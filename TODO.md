@@ -1,3 +1,3 @@
-# TODO: Add Navigation Path to Support Page
+# TODO: Move Sidebar to Left
 
-- [x] Edit SupportPage.tsx to add breadcrumb component displaying "داشبورد > پشتیبانی"
+- [x] Edit Index.tsx to change side to "left" and reorder Sidebar before SidebarInset
