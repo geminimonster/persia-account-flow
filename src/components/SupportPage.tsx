@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import { Mail, MessageCircle, HelpCircle, Ticket, Phone } from "lucide-react";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/utils";
 
 // Schema for contact form
@@ -130,6 +131,17 @@ const SupportPage: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <Breadcrumb className="mb-4">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbPage>داشبورد</BreadcrumbPage>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>پشتیبانی</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <Tabs defaultValue="faq" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="faq">سؤالات متداول</TabsTrigger>
