@@ -15,6 +15,7 @@ import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
 import BusinessAccountingPage from "@/pages/BusinessAccountingPage";
 import FirstTimeSetup from "@/components/FirstTimeSetup";
 import SystemSettings from "@/components/SystemSettings";
+import SupportPage from "@/components/SupportPage";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 
 interface IndexProps {
@@ -57,6 +58,8 @@ const Index = ({ language, onLanguageChange }: IndexProps) => {
         return <IndustrialAccountingPage onBack={() => setActiveSection("dashboard")} />;
       case "business-accounting":
         return <BusinessAccountingPage onBack={() => setActiveSection("dashboard")} />;
+      case "support":
+        return <SupportPage />;
       case "customers":
         return (
           <div className="text-center py-12">

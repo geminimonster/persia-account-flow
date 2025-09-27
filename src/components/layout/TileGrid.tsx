@@ -22,12 +22,15 @@ import {
   FileText,
   Building,
   UserCog,
-  Shield
+  Shield,
+  Settings2,
+  PhoneCall
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ActionButtons from "@/components/layout/ActionButtons";
 import { TileGridSkeleton } from "@/components/ui/skeleton-layouts";
+import { callbackify } from "util";
 
 interface TileGridProps {
   activeSection: string;
@@ -216,6 +219,14 @@ const tiles = [
     title: "تنظیمات سیستم",
     description: "تنظیمات کلی سیستم",
     icon: Settings,
+    color: "bg-card",
+    iconColor: "text-card-foreground"
+  },
+  {
+    id: "support",
+    title: "پشتیبانی",
+    description: "درخواست پشتیبانی از سایر کاربران",
+    icon: PhoneCall,
     color: "bg-card",
     iconColor: "text-card-foreground"
   }

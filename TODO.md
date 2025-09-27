@@ -1,18 +1,12 @@
-# TODO: Implement User Agreement Flow
+# TODO for Creating Support Page
 
-## Plan Summary
-Ensure the user sees the agreement first by modifying the ProtectedRoute to check for agreement acceptance and setup completion before showing the main app.
+## Overview
+Create a standalone SupportPage.tsx component with full features: FAQ (Accordion), Contact Form, Mock Support Tickets (Table + Dialog), Live Chat (Dialog with mock interactions). In Persian/RTL, using shadcn/ui components. No routing or backend.
 
 ## Steps
-1. [x] Update `src/components/ProtectedRoute.tsx` to implement the flow:
-   - Check authentication
-   - Check if user agreement is accepted
-   - Check if setup is completed
-   - Render appropriate component based on state
-2. [x] Import necessary components (UserAgreement, FirstTimeSetup)
-3. [x] Test the application flow
-4. [x] Verify localStorage handling
-
-## Current Status
-- All steps completed successfully
-- Implementation ready for use
+- [ ] 1. Create src/components/SupportPage.tsx with all features (imports, layout, tabs, forms, mocks).
+- [ ] 2. Temporarily add <SupportPage /> to src/pages/Index.tsx for testing (e.g., in a new section).
+- [ ] 3. Test the page: Use browser_action to launch localhost:8081, scroll/click to verify UI, form submission (toast), interactions.
+- [ ] 4. Remove temporary addition from src/pages/Index.tsx.
+- [ ] 5. Update TODO.md to mark all steps complete.
+- [ ] 6. Use attempt_completion to finalize.
