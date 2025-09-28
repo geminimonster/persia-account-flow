@@ -39,10 +39,10 @@ interface TileGridProps {
 
 const tiles = [
   {
-    id: "dashboard",
-    title: "داشبورد",
+    id: "accounting-general",
+    title: "حسابداری عمومی",
     description: "نمای کلی مالی",
-    icon: LayoutDashboard,
+    icon: Calculator,
     color: "bg-primary",
     iconColor: "text-primary-foreground"
   },
