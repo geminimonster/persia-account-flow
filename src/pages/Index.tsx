@@ -9,6 +9,7 @@ import Dashboard from "@/components/Dashboard";
 import AccountsSection from "@/components/sections/AccountsSection";
 import TransactionsSection from "@/components/sections/TransactionsSection";
 import AccountingVouchersPage from "@/pages/AccountingVouchersPage";
+import AccountingDocumentsPage from "@/pages/AccountingDocumentsPage";
 import FinancialPage from "@/pages/FinancialPage";
 import AutomationPage from "@/pages/AutomationPage";
 import IndustrialAccountingPage from "@/pages/IndustrialAccountingPage";
@@ -83,6 +84,8 @@ const Index = ({ language, onLanguageChange }: IndexProps) => {
         );
       case "settings":
         return <SystemSettings />;
+      case "accounting-general":
+        return <AccountingDocumentsPage onBack={() => setActiveSection("dashboard")} />;
       default:
         return <Dashboard />;
     }
