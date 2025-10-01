@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProductIntroPage from "./pages/ProductIntroPage";
+import AccountingDocumentsPage from "./pages/AccountingDocumentsPage";
 import UserAgreement from "./components/UserAgreement";
 import FirstTimeSetup from "./components/FirstTimeSetup";
 
@@ -75,6 +76,11 @@ const App = () => {
             <BrowserRouter>
               <Routes>
                 <Route path="/intro" element={<ProductIntroPage />} />
+                <Route path="/accounting-documents" element={
+                  <ProtectedRoute>
+                    <AccountingDocumentsPage />
+                  </ProtectedRoute>
+                } />
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index language={language} onLanguageChange={handleLanguageChange} />
