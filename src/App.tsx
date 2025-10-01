@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ProductIntroPage from "./pages/ProductIntroPage";
 import UserAgreement from "./components/UserAgreement";
 import FirstTimeSetup from "./components/FirstTimeSetup";
 
@@ -73,6 +74,7 @@ const App = () => {
             <Sonner />
             <BrowserRouter>
               <Routes>
+                <Route path="/intro" element={<ProductIntroPage />} />
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index language={language} onLanguageChange={handleLanguageChange} />
