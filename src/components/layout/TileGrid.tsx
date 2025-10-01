@@ -49,7 +49,7 @@ const tiles = [
   {
     id: "accounts",
     title: "حساب‌ها",
-    description: "مدیریت حساب‌های مالی",
+    description: "مدیریت حساب‌ها",
     icon: Wallet,
     color: "bg-success",
     iconColor: "text-success-foreground"

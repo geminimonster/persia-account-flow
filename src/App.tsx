@@ -12,6 +12,11 @@ import ProductIntroPage from "./pages/ProductIntroPage";
 import AccountingDocumentsPage from "./pages/AccountingDocumentsPage";
 import UserAgreement from "./components/UserAgreement";
 import FirstTimeSetup from "./components/FirstTimeSetup";
+import AccountsPage from "./pages/AccountsPage";
+import TransactionsPage from "./pages/TransactionsPage";
+import FinancialAnalyticsPage from "./pages/FinancialAnalyticsPage";
+import ReportsPage from "./pages/ReportsPage";
+import AddTransactionPage from "./pages/AddTransactionPage";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +89,31 @@ const App = () => {
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index language={language} onLanguageChange={handleLanguageChange} />
+                  </ProtectedRoute>
+                } />
+                <Route path="/accounts" element={
+                  <ProtectedRoute>
+                    <AccountsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/transactions" element={
+                  <ProtectedRoute>
+                    <TransactionsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/financial-analytics" element={
+                  <ProtectedRoute>
+                    <FinancialAnalyticsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/reports" element={
+                  <ProtectedRoute>
+                    <ReportsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/add-transaction" element={
+                  <ProtectedRoute>
+                    <AddTransactionPage />
                   </ProtectedRoute>
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
